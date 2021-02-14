@@ -32,7 +32,7 @@ if ( $system_pkg_version['installed_version'] !== $system_pkg_version['version']
     $command1 = "echo '" . $system_pkg_version['version'] . "' > data.txt";
     shell_exec($command1);
 
-    echo "Updating Firewall...\n";
+    echo "\nUpdating Firewall...\n";
 
     $command2 = "echo '" . date("jS F Y h:i:s A") . " ---- Updating Firewall... ' >> checklog.txt";
     shell_exec($command2);
@@ -43,7 +43,7 @@ if ( $system_pkg_version['installed_version'] !== $system_pkg_version['version']
     echo "OK - already at latest version\n";
     $upgraded_version = shell_exec("cat /root/data.txt");
 
-    echo "Checking if Firewall has recently been updated...";
+    echo "Checking if Firewall has recently been updated...\n";
 
     if(empty($upgraded_version)) {
 
