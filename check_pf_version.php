@@ -47,7 +47,7 @@ if ( $system_pkg_version['installed_version'] !== $system_pkg_version['version']
 
     if(empty($upgraded_version)) {
 
-        echo "Firewall has not been recently updated!\n"
+        echo "Firewall has not been recently updated!\n";
         $additional_info = "OK - already at latest version\n" ; $exitcode = 0;
         
     } else {
