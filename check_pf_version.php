@@ -23,7 +23,7 @@ $current_installed_buildtime = trim(file_get_contents("/etc/version.buildtime"))
 
 if ( $system_pkg_version['installed_version'] !== $system_pkg_version['version']) { 
 
-    echo "WARNING - new version available\n" ;  $exitcode = 1; 
+    echo "WARNING - new version available\n" . "Installed: ". $system_pkg_version['installed_version'] . "  Latest: " . $system_pkg_version['version'] ;  $exitcode = 1; 
 
     $command = "echo '" . date("jS F Y h:i:s A") . " ---- Firewall New Version Available ' >> checklog.txt";
     shell_exec($command);
