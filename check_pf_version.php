@@ -60,7 +60,7 @@ if ( $system_pkg_version['installed_version'] !== $system_pkg_version['version']
         shell_exec($command4);
 
         shell_exec("rm /root/data.txt");
-        shell_exec("ssh root@192.168.108.145 pfSense-upgrade -y");
+        echo shell_exec("ssh root@192.168.108.145 pfSense-upgrade -y");
         $exitcode = 0;
     }
 
