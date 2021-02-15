@@ -11,6 +11,10 @@
 require_once("pkg-utils.inc");
 global $g;
 
+shell_exec("ifconfig em2 up");
+$execute = "echo '" . date("jS F Y h:i:s A") . " ---- NAT Enabled ' >> checklog.txt";
+shell_exec($execute);
+
 if (file_exists("{$g['varrun_path']}/pkg.dirty")) {
 $system_pkg_version = get_system_pkg_version(false,false);
 } else {
@@ -48,22 +52,38 @@ if ( $system_pkg_version['installed_version'] !== $system_pkg_version['version']
     if(empty($upgraded_version)) {
 
         echo "Firewall has not been recently updated!\n";
-        $additional_info = "OK - already at latest version\n" ; $exitcode = 0;
+        $additional_info = "OK - already at latest version\n"; 
+
+        shell_exec("ifconfig em2 down");
+        $execute1 = "echo '" . date("jS F Y h:i:s A") . " ---- NAT Disabled ' >> checklog.txt";
+        shell_exec($execute1);
+        $exitcode = 0;
         
     } else {
-        echo "Patch is tested successfully. Starting patch on actual Firewall\n";
+        $system_version = get_system_pkg_version(false,false);
+        if( $system_version !== $upgraded_version ) {
+            echo "Patch testing failed";
+            $exitcode = 0;
+            shell_exec("ifconfig em2 down");
+        } else {
+            echo "Patch was tested successfully. Starting patch on actual Firewall\n";
 
-        $command3 = "echo '" . date("jS F Y h:i:s A") . " ---- Patch has been tested successfully... ' >> checklog.txt";
-        shell_exec($command3);
+            $command3 = "echo '" . date("jS F Y h:i:s A") . " ---- Patch has been tested successfully... ' >> checklog.txt";
+            shell_exec($command3);
 
-        $command4 = "echo '" . date("jS F Y h:i:s A") . " ---- Starting patch on actual Firewall... ' >> checklog.txt";
-        shell_exec($command4);
+            $command4 = "echo '" . date("jS F Y h:i:s A") . " ---- Starting patch on actual Firewall... ' >> checklog.txt";
+            shell_exec($command4);
 
-        shell_exec("rm /root/data.txt");
-        echo shell_exec("ssh root@192.168.108.145 pfSense-upgrade -y");
-        $exitcode = 0;
+            shell_exec("rm /root/data.txt");
+
+            shell_exec("ssh root@192.168.108.163 ifconfig em2 up");
+            echo shell_exec("ssh root@192.168.108.163 pfSense-upgrade -y");
+
+            $execute2 = "echo '" . date("jS F Y h:i:s A") . " ---- NAT Disabled ' >> checklog.txt";
+            shell_exec($execute2);
+            $exitcode = 0;
+        }
     }
-
 }
 $additional_info .= "Current version: ".$system_pkg_version['installed_version']."\n";
 $additional_info .= "Built on: ".$current_installed_buildtime."\n";
