@@ -3,10 +3,8 @@
 
 # This check pulls the version from the website and compares it
 # to the installed version. 
-# Many thanks to Atadilo for fixing the code and simplifying it.
 
-# Created 15 Dec 2017
-# Modified 12 May 2020
+
 
 require_once("pkg-utils.inc");
 global $g;
@@ -63,17 +61,18 @@ if ( $system_pkg_version['installed_version'] !== $system_pkg_version['version']
         $system_version = get_system_pkg_version(false,false);
         if( $system_version !== $upgraded_version ) {
             echo "Patch testing failed";
-            $exitcode = 0;
+            
+            shell_exec("rm /root/data.txt");
             shell_exec("ifconfig em2 down");
+
+            $exitcode = 0;
         } else {
             echo "Patch was tested successfully. Starting patch on actual Firewall\n";
-
             $command3 = "echo '" . date("jS F Y h:i:s A") . " ---- Patch has been tested successfully... ' >> checklog.txt";
             shell_exec($command3);
-
             $command4 = "echo '" . date("jS F Y h:i:s A") . " ---- Starting patch on actual Firewall... ' >> checklog.txt";
-            shell_exec($command4);
-
+            shell_exec($command4);X
+            //removing the check
             shell_exec("rm /root/data.txt");
 
             shell_exec("ssh root@192.168.108.163 ifconfig em2 up");
